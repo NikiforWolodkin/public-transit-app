@@ -6,11 +6,14 @@
     <Nullable>enable</Nullable>
 
 	<PackageId>TransitApplication</PackageId>
-	<Version>1.0.0</Version>
+	<Version>1.0.1</Version>
 	<Authors>Nick Wolodkin</Authors>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<PackageReadmeFile>Readme.md</PackageReadmeFile>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<Description>
+		This NuGet package provides a set of custom exceptions for use in TransitApplication, as well as middleware for handling these exceptions.
+	</Description>
   </PropertyGroup>
 
   <ItemGroup>

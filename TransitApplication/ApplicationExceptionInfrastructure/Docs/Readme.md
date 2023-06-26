@@ -7,10 +7,10 @@ This NuGet package provides a set of custom exceptions for use in TransitApplica
 To install this package, use the following command in the Package Manager Console:
 
 ```
-Install-Package TransitApplication
+NuGet\Install-Package TransitApplication -Version 1.0.1
 ```
 
-To use the custom exceptions, simply add a reference to the `TransitApplication.Exceptions` namespace and throw the appropriate exception when needed.
+To use the custom exceptions, simply add a reference to the `TransitApplication.HttpExceptions` namespace and throw the appropriate exception when needed.
 
 To use this package, add the following line to your `Program.cs` file, before the `app.Run();` line:
 
@@ -25,4 +25,4 @@ app.Run();
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for more information.
+This project is licensed under the MIT License.

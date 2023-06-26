@@ -1,11 +1,13 @@
 ﻿using Domain.Exceptions;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions.Dtos;
 using Services.Interfaces;
 
 namespace Presentation.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("bus-stops-api/bus-stops")]
     public class BusStopsController : ControllerBase
@@ -25,6 +27,7 @@ namespace Presentation.Controllers
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(ICollection<BusStopDto>))]
         [ProducesResponseType(500)]
+        [ProducesResponseType(401)]
         public async Task<IActionResult> GetAllAsync()
         {
             var busStops = await _serviceManager.BusStopService.GetAllAsync();
@@ -36,6 +39,7 @@ namespace Presentation.Controllers
         [ActionName(nameof(GetByIdAsync))]
         [ProducesResponseType(200, Type = typeof(BusStopDto))]
         [ProducesResponseType(500)]
+        [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
@@ -48,6 +52,7 @@ namespace Presentation.Controllers
         [HttpGet("{longitude:double}&{latitude:double}")]
         [ProducesResponseType(200, Type = typeof(ICollection<BusStopDto>))]
         [ProducesResponseType(500)]
+        [ProducesResponseType(401)]
         public async Task<IActionResult> GetNearbyAsync(double longitude, double latitude)
         {
             var busStops = await _serviceManager.BusStopService.GetNearbyAsync(longitude, latitude);
@@ -58,6 +63,8 @@ namespace Presentation.Controllers
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(BusStopDto))]
         [ProducesResponseType(500)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         public async Task<IActionResult> AddAsync(BusStopAddDto busStopAddDto)
         {
             var validationResults = await _busStopAddValidator.ValidateAsync(busStopAddDto);
@@ -79,6 +86,8 @@ namespace Presentation.Controllers
         [HttpPut("{id:guid}")]
         [ProducesResponseType(200, Type = typeof(BusStopDto))]
         [ProducesResponseType(500)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> UpdateAsync(Guid id, BusStopUpdateDto busStopUpdateDto)
         {
@@ -101,6 +110,7 @@ namespace Presentation.Controllers
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(500)]
+        [ProducesResponseType(401)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> RemoveAsync(Guid id)
         {
