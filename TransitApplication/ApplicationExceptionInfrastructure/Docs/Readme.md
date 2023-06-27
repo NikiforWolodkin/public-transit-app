@@ -7,7 +7,7 @@ This NuGet package provides a set of custom exceptions for use in TransitApplica
 To install this package, use the following command in the Package Manager Console:
 
 ```
-NuGet\Install-Package TransitApplication -Version 1.0.1
+NuGet\Install-Package TransitApplication -Version 1.0.3
 ```
 
 To use the custom exceptions, simply add a reference to the `TransitApplication.HttpExceptions` namespace and throw the appropriate exception when needed.

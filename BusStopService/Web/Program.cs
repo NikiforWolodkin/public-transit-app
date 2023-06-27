@@ -10,7 +10,7 @@ using Services.Abstractions.Dtos;
 using Services.Interfaces;
 using Services.Services;
 using Swashbuckle.AspNetCore.Filters;
-using Web.Middlewares;
+using TransitApplication.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,12 +73,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
+        options.OAuthClientId("m2m.client");
+        options.OAuthClientSecret("SuperSecretPassword");
+        options.OAuthScopes("publictransitapi.scope");
     });
 }
 
 app.UseHttpsRedirection();
 
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseExceptionHandlingMiddleware();
 
 app.UseAuthentication();
 

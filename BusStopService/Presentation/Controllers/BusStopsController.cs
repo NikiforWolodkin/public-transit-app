@@ -1,9 +1,9 @@
-﻿using Domain.Exceptions;
-using FluentValidation;
+﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions.Dtos;
 using Services.Interfaces;
+using TransitApplication.HttpExceptions;
 
 namespace Presentation.Controllers
 {

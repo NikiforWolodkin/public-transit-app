@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Domain.Entities;
-using Domain.Exceptions;
 using Domain.RepositoryInterfaces;
 using NetTopologySuite.Geometries;
 using Services.Abstractions.Dtos;
 using Services.Abstractions.Interfaces;
+using TransitApplication.HttpExceptions;
 
 namespace Services.Services
 {
