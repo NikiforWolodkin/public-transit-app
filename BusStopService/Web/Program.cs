@@ -17,8 +17,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => {
-    options.AddSecurityDefinition("OAuth2", new OpenApiSecurityScheme
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
     {
+        In = ParameterLocation.Header,
         Type = SecuritySchemeType.OAuth2,
         Flows = new OpenApiOAuthFlows
         {

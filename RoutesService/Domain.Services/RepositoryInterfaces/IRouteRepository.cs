@@ -10,6 +10,5 @@ namespace Domain.Services.RepositoryInterfaces
         Task<Route> GetByIdAsync(Guid id);
         void Add(Route route);
         void Remove(Route route);
-        Task SaveChangesAsync();
     }
 }

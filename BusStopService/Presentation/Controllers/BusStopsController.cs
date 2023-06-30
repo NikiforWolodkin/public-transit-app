@@ -9,7 +9,7 @@ namespace Presentation.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("bus-stops-api/bus-stops")]
+    [Route("api/bus-stops")]
     public class BusStopsController : ControllerBase
     {
         private readonly IServiceManager _serviceManager;

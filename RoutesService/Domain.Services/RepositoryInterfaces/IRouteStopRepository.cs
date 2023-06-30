@@ -8,6 +8,5 @@ namespace Domain.Services.RepositoryInterfaces
         Task<RouteStop> GetByIdAsync(Guid id);
         void Add(RouteStop routeStop);
         void Remove(RouteStop routeStop);
-        Task SaveChangesAsync();
     }
 }
