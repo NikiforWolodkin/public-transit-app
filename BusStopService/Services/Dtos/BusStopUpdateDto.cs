@@ -1,6 +1,6 @@
-﻿using Domain.Enums;
-using NetTopologySuite.Geometries;
+﻿using NetTopologySuite.Geometries;
 using System.ComponentModel.DataAnnotations.Schema;
+using TransitApplication.Enums;
 
 namespace Services.Abstractions.Dtos
 {

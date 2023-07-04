@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Entities;
 using Domain.Services;
+using FluentValidation;
 using Services.Dtos;
 using Services.Helpers;
 using Services.Interfaces;
@@ -12,11 +13,13 @@ namespace Services.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IValidator<List<RouteStop>> _routeStopValidator;
 
-        public RouteService(IUnitOfWork unitOfWork, IMapper mapper)
+        public RouteService(IUnitOfWork unitOfWork, IMapper mapper, IValidator<List<RouteStop>> routeStopValidator)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _routeStopValidator = routeStopValidator;
         }
 
         async Task<RouteDto> IRouteService.AddAsync(RouteAddDto routeAddDto)
@@ -27,6 +30,17 @@ namespace Services.Services
                 var routeStops = await RouteStopMapper
                     .MapFromDtoAsync(routeAddDto.RouteStops, _unitOfWork);
 
+                var validationResults = await _routeStopValidator.ValidateAsync(routeStops);
+
+                if (!validationResults.IsValid)
+                {
+                    var error = validationResults.Errors.First();
+
+                    var errorMessage = $"{error.ErrorCode}: {error.ErrorCode}";
+
+                    throw new BadRequestException("Route is invalid.", errorMessage);
+                }
+
                 _unitOfWork.AddRoute(route, routeStops);
 
                 await _unitOfWork.SaveChangesAsync();
@@ -34,6 +48,14 @@ namespace Services.Services
                 var routeDto = _mapper.Map<RouteDto>(route);
 
                 return routeDto;
+            }
+            catch (BadRequestException ex)
+            {
+                throw ex;
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new NotFoundException("Bus stop not found", $"{ex.GetType().Name}: {ex.Message}");
             }
             catch (Exception ex)
             {
@@ -46,6 +68,11 @@ namespace Services.Services
             try
             {
                 var routes = await _unitOfWork.GetAllRoutesAsync();
+
+                foreach (var route in routes)
+                {
+                    route.RouteStops = RouteStopOrderer.Order(route.RouteStops);
+                }
 
                 var routesDto = _mapper.Map<ICollection<RouteDto>>(routes);
 
@@ -62,6 +89,11 @@ namespace Services.Services
             try
             {
                 var routes = await _unitOfWork.GetBusStopRoutesAsync(busStopId);
+
+                foreach (var route in routes)
+                {
+                    route.RouteStops = RouteStopOrderer.Order(route.RouteStops);
+                }
 
                 var routesDto = _mapper.Map<ICollection<RouteDto>>(routes);
 
@@ -83,6 +115,8 @@ namespace Services.Services
             {
                 var route = await _unitOfWork.GetRouteByIdAsync(id);
 
+                route.RouteStops = RouteStopOrderer.Order(route.RouteStops);
+
                 var routeDto = _mapper.Map<RouteDto>(route);
 
                 return routeDto;
@@ -102,6 +136,11 @@ namespace Services.Services
             try
             {
                 var routes = await _unitOfWork.GetRoutesByRouteNameAsync(routeName);
+
+                foreach (var route in routes)
+                {
+                    route.RouteStops = RouteStopOrderer.Order(route.RouteStops);
+                }
 
                 var routesDto = _mapper.Map<ICollection<RouteDto>>(routes);
 
@@ -141,6 +180,17 @@ namespace Services.Services
                 var routeStops = await RouteStopMapper
                     .MapFromDtoAsync(routeStopsDto, _unitOfWork);
 
+                var validationResults = await _routeStopValidator.ValidateAsync(routeStops);
+
+                if (!validationResults.IsValid)
+                {
+                    var error = validationResults.Errors.First();
+
+                    var errorMessage = $"{error.ErrorCode}: {error.ErrorCode}";
+
+                    throw new BadRequestException("Route is invalid.", errorMessage);
+                }
+
                 _unitOfWork.ReplaceRouteStops(route, routeStops);
 
                 await _unitOfWork.SaveChangesAsync();
@@ -149,9 +199,13 @@ namespace Services.Services
 
                 return routeDto;
             }
+            catch (BadRequestException ex)
+            {
+                throw ex;
+            }
             catch (InvalidOperationException ex)
             {
-                throw new NotFoundException("Route not found", $"{ex.GetType().Name}: {ex.Message}");
+                throw new NotFoundException($"{ex.GetType().Name}: {ex.Message}");
             }
             catch (Exception ex)
             {

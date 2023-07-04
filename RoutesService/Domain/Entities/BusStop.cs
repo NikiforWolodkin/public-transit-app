@@ -1,4 +1,4 @@
-﻿using Domain.Enums;
+﻿using TransitApplication.Enums;
 
 namespace Domain.Entities
 {

@@ -1,5 +1,5 @@
-﻿using Domain.Enums;
-using NetTopologySuite.Geometries;
+﻿using NetTopologySuite.Geometries;
+using TransitApplication.Enums;
 
 namespace Services.Abstractions.Dtos
 {

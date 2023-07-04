@@ -1,4 +1,4 @@
-﻿namespace Domain.Enums
+﻿namespace TransitApplication.Enums
 {
     public enum BusStopType
     {
