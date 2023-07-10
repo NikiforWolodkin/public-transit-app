@@ -7,13 +7,13 @@ namespace Domain.Services
         void AddRoute(Route route, ICollection<RouteStop> routeStops);
         void ReplaceRouteStops(Route route, ICollection<RouteStop> routeStops);
         void RemoveRoute(Route route);
-        Task<ICollection<Route>> GetAllRoutesAsync();
-        Task<ICollection<Route>> GetBusStopRoutesAsync(Guid busStopId);
-        Task<ICollection<Route>> GetRoutesByRouteNameAsync(string routeName);
+        Task<IQueryable<Route>> GetAllRoutesAsync();
+        Task<IQueryable<Route>> GetBusStopRoutesAsync(Guid busStopId);
+        Task<IQueryable<Route>> GetRoutesByRouteNameAsync(string routeName);
         Task<Route> GetRouteByIdAsync(Guid id);
-        Task<ICollection<RouteStop>> GetAllRouteStopsAsync();
+        Task<IQueryable<RouteStop>> GetAllRouteStopsAsync();
         Task<RouteStop> GetRouteStopByIdAsync(Guid id);
-        Task<ICollection<BusStop>> GetAllBusStopsAsync();
+        Task<IQueryable<BusStop>> GetAllBusStopsAsync();
         Task<BusStop> GetBusStopByIdAsync(Guid id);
         Task SaveChangesAsync();
     }

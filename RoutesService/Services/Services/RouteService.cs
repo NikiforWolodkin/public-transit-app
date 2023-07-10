@@ -2,9 +2,10 @@
 using Domain.Entities;
 using Domain.Services;
 using FluentValidation;
+using Serilog;
 using Services.Dtos;
-using Services.Helpers;
 using Services.Interfaces;
+using TransitApplication.Enums;
 using TransitApplication.HttpExceptions;
 
 namespace Services.Services
@@ -27,8 +28,7 @@ namespace Services.Services
             try
             {   
                 var route = _mapper.Map<Route>(routeAddDto);
-                var routeStops = await RouteStopMapper
-                    .MapFromDtoAsync(routeAddDto.RouteStops, _unitOfWork);
+                var routeStops = await GetRouteStops(routeAddDto.RouteStops);
 
                 var validationResults = await _routeStopValidator.ValidateAsync(routeStops);
 
@@ -45,20 +45,28 @@ namespace Services.Services
 
                 await _unitOfWork.SaveChangesAsync();
 
+                route.RouteStops = OrderRouteStops(route.RouteStops);
+
                 var routeDto = _mapper.Map<RouteDto>(route);
 
                 return routeDto;
             }
             catch (BadRequestException ex)
             {
+                Log.Information("AddAsync: Route is invalid. Exception => {@ex}", ex);
+
                 throw ex;
             }
             catch (InvalidOperationException ex)
             {
-                throw new NotFoundException("Bus stop not found", $"{ex.GetType().Name}: {ex.Message}");
+                Log.Information("AddAsync: Bus stop not found. Exception =>  {@ex}", ex);
+
+                throw new NotFoundException("Bus stop not found.", $"{ex.GetType().Name}: {ex.Message}");
             }
             catch (Exception ex)
             {
+                Log.Error("AddAsync: Error! Exception =>  {@ex}", ex);
+
                 throw new InternalServerErrorException($"{ex.GetType().Name}: {ex.Message}");
             }
         }
@@ -67,11 +75,12 @@ namespace Services.Services
         {
             try
             {
-                var routes = await _unitOfWork.GetAllRoutesAsync();
+                var routesQuryable = await _unitOfWork.GetAllRoutesAsync();
+                var routes = routesQuryable.ToList();
 
                 foreach (var route in routes)
                 {
-                    route.RouteStops = RouteStopOrderer.Order(route.RouteStops);
+                    route.RouteStops = OrderRouteStops(route.RouteStops);
                 }
 
                 var routesDto = _mapper.Map<ICollection<RouteDto>>(routes);
@@ -80,6 +89,8 @@ namespace Services.Services
             }
             catch (Exception ex)
             {
+                Log.Error("GetAllAsync: Error! Exception =>  {@ex}", ex);
+
                 throw new InternalServerErrorException($"{ex.GetType().Name}: {ex.Message}");
             }
         }
@@ -88,23 +99,28 @@ namespace Services.Services
         {
             try
             {
-                var routes = await _unitOfWork.GetBusStopRoutesAsync(busStopId);
+                var routesQuryable = await _unitOfWork.GetBusStopRoutesAsync(busStopId);
+                var routes = routesQuryable.ToList();
 
                 foreach (var route in routes)
                 {
-                    route.RouteStops = RouteStopOrderer.Order(route.RouteStops);
+                    route.RouteStops = OrderRouteStops(route.RouteStops);
                 }
 
-                var routesDto = _mapper.Map<ICollection<RouteDto>>(routes);
+                var routesDto = _mapper.Map<ICollection<RouteDto>>(routes.ToList());
 
                 return routesDto;
             }
             catch (InvalidOperationException ex)
             {
-                throw new NotFoundException("Bus stop not found", $"{ex.GetType().Name}: {ex.Message}");
+                Log.Information("GetBusStopRoutesAsync: Bus stop not found. Exception =>  {@ex}", ex);
+
+                throw new NotFoundException("Bus stop not found.", $"{ex.GetType().Name}: {ex.Message}");
             }
             catch (Exception ex)
             {
+                Log.Error("GetBusStopRoutesAsync: Error! Exception =>  {@ex}", ex);
+
                 throw new InternalServerErrorException($"{ex.GetType().Name}: {ex.Message}");
             }
         }
@@ -115,7 +131,7 @@ namespace Services.Services
             {
                 var route = await _unitOfWork.GetRouteByIdAsync(id);
 
-                route.RouteStops = RouteStopOrderer.Order(route.RouteStops);
+                route.RouteStops = OrderRouteStops(route.RouteStops);
 
                 var routeDto = _mapper.Map<RouteDto>(route);
 
@@ -123,10 +139,14 @@ namespace Services.Services
             }
             catch (InvalidOperationException ex)
             {
-                throw new NotFoundException("Route not found", $"{ex.GetType().Name}: {ex.Message}");
+                Log.Information("GetByIdAsync: Route not found. Exception =>  {@ex}", ex);
+
+                throw new NotFoundException("Route not found.", $"{ex.GetType().Name}: {ex.Message}");
             }
             catch (Exception ex)
             {
+                Log.Error("GetByIdAsync: Error! Exception =>  {@ex}", ex);
+
                 throw new InternalServerErrorException($"{ex.GetType().Name}: {ex.Message}");
             }
         }
@@ -135,19 +155,22 @@ namespace Services.Services
         {
             try
             {
-                var routes = await _unitOfWork.GetRoutesByRouteNameAsync(routeName);
+                var routesQueryable = await _unitOfWork.GetRoutesByRouteNameAsync(routeName);
+                var routes = routesQueryable.ToList();
 
                 foreach (var route in routes)
                 {
-                    route.RouteStops = RouteStopOrderer.Order(route.RouteStops);
+                    route.RouteStops = OrderRouteStops(route.RouteStops);
                 }
 
-                var routesDto = _mapper.Map<ICollection<RouteDto>>(routes);
+                var routesDto = _mapper.Map<ICollection<RouteDto>>(routes.ToList());
 
                 return routesDto;
             }
             catch (Exception ex)
             {
+                Log.Error("GetByRouteNameAsync: Error! Exception =>  {@ex}", ex);
+
                 throw new InternalServerErrorException($"{ex.GetType().Name}: {ex.Message}");
             }
         }
@@ -164,10 +187,14 @@ namespace Services.Services
             }
             catch (InvalidOperationException ex)
             {
-                throw new NotFoundException("Route not found", $"{ex.GetType().Name}: {ex.Message}");
+                Log.Information("RemoveAsync: Route not found. Exception =>  {@ex}", ex);
+
+                throw new NotFoundException("Route not found.", $"{ex.GetType().Name}: {ex.Message}");
             }
             catch (Exception ex)
             {
+                Log.Error("RemoveAsync: Error! Exception =>  {@ex}", ex);
+
                 throw new InternalServerErrorException($"{ex.GetType().Name}: {ex.Message}");
             }
         }
@@ -177,8 +204,7 @@ namespace Services.Services
             try
             {
                 var route = await _unitOfWork.GetRouteByIdAsync(id);
-                var routeStops = await RouteStopMapper
-                    .MapFromDtoAsync(routeStopsDto, _unitOfWork);
+                var routeStops = await GetRouteStops(routeStopsDto);
 
                 var validationResults = await _routeStopValidator.ValidateAsync(routeStops);
 
@@ -195,22 +221,75 @@ namespace Services.Services
 
                 await _unitOfWork.SaveChangesAsync();
 
+                route.RouteStops = OrderRouteStops(route.RouteStops);
+
                 var routeDto = _mapper.Map<RouteDto>(route);
 
                 return routeDto;
             }
             catch (BadRequestException ex)
             {
+                Log.Information("ReplaceRouteStopsAsync: Route is invalid. Exception =>  {@ex}", ex);
+
                 throw ex;
             }
             catch (InvalidOperationException ex)
             {
+                Log.Information("ReplaceRouteStopsAsync: Not found. Exception =>  {@ex}", ex);
+
                 throw new NotFoundException($"{ex.GetType().Name}: {ex.Message}");
             }
             catch (Exception ex)
             {
+                Log.Error("ReplaceRouteStopsAsync: Error! Exception =>  {@ex}", ex);
+
                 throw new InternalServerErrorException($"{ex.GetType().Name}: {ex.Message}");
             }
+        }
+
+        public async Task<List<RouteStop>> GetRouteStops(List<RouteStopAddDto> routeStopsAddDto)
+        {
+            var routeStops = new List<RouteStop>();
+
+            foreach (var routeStopAddDto in routeStopsAddDto)
+            {
+                var busStop = await _unitOfWork.GetBusStopByIdAsync(routeStopAddDto.BusStopId);
+
+                var routeStop = new RouteStop
+                {
+                    BusStop = busStop,
+                    IntervalToNextStop = routeStopAddDto.IntervalToNextStop
+                };
+
+                if (routeStops.Count() != 0)
+                {
+                    routeStops.Last().NextRouteStop = routeStop;
+                }
+
+                routeStops.Add(routeStop);
+            }
+
+            return routeStops;
+        }
+
+        List<RouteStop> OrderRouteStops(ICollection<RouteStop> routeStopsToOrder)
+        {
+            var routeStops = new List<RouteStop>();
+
+            var firstStop = routeStopsToOrder
+                .Where(stop => stop.BusStop.Type == BusStopType.Depo && stop.NextRouteStop is not null)
+                .First();
+
+            routeStops.Add(firstStop);
+
+            while (routeStops.Last().NextRouteStop is not null)
+            {
+                var nextStop = routeStops.Last().NextRouteStop;
+
+                routeStops.Add(nextStop);
+            }
+
+            return routeStops;
         }
     }
 }

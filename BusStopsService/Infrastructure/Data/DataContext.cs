@@ -7,7 +7,10 @@ namespace Infrastructure.Data
     {
         public DbSet<BusStop> BusStops { get; set; }
 
-        public DataContext(DbContextOptions options) : base(options) { }
+        public DataContext(DbContextOptions options) : base(options)
+        {
+            Database.EnsureCreated();
+        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

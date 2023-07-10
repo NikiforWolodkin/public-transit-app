@@ -44,7 +44,7 @@ builder.Services.AddAuthentication("Bearer")
     .AddIdentityServerAuthentication("Bearer", options =>
     {
         options.ApiName = "publictransitapi";
-        options.Authority = "https://localhost:5443";
+        options.Authority = "https://auth:5443";
     });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -69,7 +69,7 @@ builder.Services.AddDbContextPool<DataContext>(contextOptionsBuilder =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+// if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(options =>

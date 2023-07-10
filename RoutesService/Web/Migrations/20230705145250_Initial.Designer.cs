@@ -5,14 +5,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230630114059_Initial")]
+    [Migration("20230705145250_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -21,18 +20,16 @@ namespace Web.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.8")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
-
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Domain.Entities.BusStop", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("Type")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -43,11 +40,11 @@ namespace Web.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -58,25 +55,25 @@ namespace Web.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("BusStopId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("char(36)");
 
                     b.Property<TimeSpan?>("IntervalToNextStop")
-                        .HasColumnType("interval");
+                        .HasColumnType("time(6)");
 
-                    b.Property<Guid?>("NextBusStopId")
-                        .HasColumnType("uuid");
+                    b.Property<Guid?>("NextRouteStopId")
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid?>("RouteId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BusStopId");
 
-                    b.HasIndex("NextBusStopId");
+                    b.HasIndex("NextRouteStopId");
 
                     b.HasIndex("RouteId");
 
@@ -91,9 +88,9 @@ namespace Web.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.BusStop", "NextBusStop")
+                    b.HasOne("Domain.Entities.RouteStop", "NextRouteStop")
                         .WithMany()
-                        .HasForeignKey("NextBusStopId");
+                        .HasForeignKey("NextRouteStopId");
 
                     b.HasOne("Domain.Entities.Route", null)
                         .WithMany("RouteStops")
@@ -101,7 +98,7 @@ namespace Web.Migrations
 
                     b.Navigation("BusStop");
 
-                    b.Navigation("NextBusStop");
+                    b.Navigation("NextRouteStop");
                 });
 
             modelBuilder.Entity("Domain.Entities.Route", b =>

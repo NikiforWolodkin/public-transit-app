@@ -33,17 +33,17 @@ namespace Infrastructure
             _routeRepository.Add(route);
         }
 
-        async Task<ICollection<BusStop>> IUnitOfWork.GetAllBusStopsAsync()
+        async Task<IQueryable<BusStop>> IUnitOfWork.GetAllBusStopsAsync()
         {
             return await _busStopRepository.GetAllAsync();
         }
 
-        async Task<ICollection<Route>> IUnitOfWork.GetAllRoutesAsync()
+        async Task<IQueryable<Route>> IUnitOfWork.GetAllRoutesAsync()
         {
             return await _routeRepository.GetAllAsync();
         }
 
-        async Task<ICollection<RouteStop>> IUnitOfWork.GetAllRouteStopsAsync()
+        async Task<IQueryable<RouteStop>> IUnitOfWork.GetAllRouteStopsAsync()
         {
             return await _routeStopRepository.GetAllAsync();
         }
@@ -53,7 +53,7 @@ namespace Infrastructure
             return await _busStopRepository.GetByIdAsync(id);
         }
 
-        async Task<ICollection<Route>> IUnitOfWork.GetBusStopRoutesAsync(Guid busStopId)
+        async Task<IQueryable<Route>> IUnitOfWork.GetBusStopRoutesAsync(Guid busStopId)
         {
             return await _routeRepository.GetBusStopRoutes(busStopId);
         }
@@ -63,7 +63,7 @@ namespace Infrastructure
             return await _routeRepository.GetByIdAsync(id);
         }
 
-        async Task<ICollection<Route>> IUnitOfWork.GetRoutesByRouteNameAsync(string routeName)
+        async Task<IQueryable<Route>> IUnitOfWork.GetRoutesByRouteNameAsync(string routeName)
         {
             return await _routeRepository.GetByRouteNameAsync(routeName);
         }

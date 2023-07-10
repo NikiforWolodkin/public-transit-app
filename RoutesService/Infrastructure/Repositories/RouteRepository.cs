@@ -2,6 +2,7 @@
 using Domain.Services.RepositoryInterfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using TransitApplication.Enums;
 
 namespace Infrastructure.Repositories
 {
@@ -19,40 +20,30 @@ namespace Infrastructure.Repositories
             _context.Routes.Add(route);
         }
 
-        async Task<ICollection<Route>> IRouteRepository.GetAllAsync()
+        async Task<IQueryable<Route>> IRouteRepository.GetAllAsync()
         {
-            return await _context.Routes
-                .Include(route => route.RouteStops)
-                .ThenInclude(stop => stop.BusStop)
-                .ToListAsync();
+            return _context.Routes.AsQueryable();
         }
 
-        async Task<ICollection<Route>> IRouteRepository.GetBusStopRoutes(Guid busStopId)
+        async Task<IQueryable<Route>> IRouteRepository.GetBusStopRoutes(Guid busStopId)
         {
-            return await _context.Routes
-                .Include(route => route.RouteStops)
-                .ThenInclude(stop => stop.BusStop)
+            return _context.Routes
                 .Where(route => route.RouteStops
                     .Select(stop => stop.BusStop.Id)
                     .Contains(busStopId))
-                .ToListAsync();
+                .AsQueryable();
         }
 
         async Task<Route> IRouteRepository.GetByIdAsync(Guid id)
         {
-            return await _context.Routes
-                .Include(route => route.RouteStops)
-                .ThenInclude(stop => stop.BusStop)
-                .FirstAsync(route => route.Id == id);
+            return await _context.Routes.FirstAsync(route => route.Id == id);
         }
 
-        async Task<ICollection<Route>> IRouteRepository.GetByRouteNameAsync(string routeName)
+        async Task<IQueryable<Route>> IRouteRepository.GetByRouteNameAsync(string routeName)
         {
-            return await _context.Routes
-                .Include(route => route.RouteStops)
-                .ThenInclude(stop => stop.BusStop)
+            return _context.Routes
                 .Where(route => route.Name == routeName)
-                .ToListAsync();
+                .AsQueryable();
         }
 
         void IRouteRepository.Remove(Route route)

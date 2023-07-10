@@ -13,9 +13,6 @@ namespace Services.Profiles
             CreateMap<RouteStop, RouteStopDto>()
                 .ForMember(destination => destination.BusStopId, options => options.MapFrom(
                     source => source.BusStop.Id
-                ))
-                .ForMember(destination => destination.NextBusStopId, options => options.MapFrom(
-                    source => source.NextBusStop == null ? (Guid?)null : source.NextBusStop.Id
                 ));
 
             CreateMap<RouteAddDto, Route>();
@@ -27,7 +24,6 @@ namespace Services.Profiles
                         {
                             Id = stop.Id,
                             BusStopId = stop.BusStop.Id,
-                            NextBusStopId = stop.NextBusStop == null ? null : stop.NextBusStop.Id,
                             IntervalToNextStop = stop.IntervalToNextStop,
                         })
                         .ToList()

@@ -4,9 +4,9 @@ namespace Domain.Services.RepositoryInterfaces
 {
     public interface IRouteRepository
     {
-        Task<ICollection<Route>> GetAllAsync();
-        Task<ICollection<Route>> GetBusStopRoutes(Guid busStopId);
-        Task<ICollection<Route>> GetByRouteNameAsync(string routeName);
+        Task<IQueryable<Route>> GetAllAsync();
+        Task<IQueryable<Route>> GetBusStopRoutes(Guid busStopId);
+        Task<IQueryable<Route>> GetByRouteNameAsync(string routeName);
         Task<Route> GetByIdAsync(Guid id);
         void Add(Route route);
         void Remove(Route route);

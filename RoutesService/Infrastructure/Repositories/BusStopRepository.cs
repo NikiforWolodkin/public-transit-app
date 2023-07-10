@@ -24,9 +24,9 @@ namespace Infrastructure.Repositories
             _context.BusStops.Remove(busStop);
         }
 
-        async Task<ICollection<BusStop>> IBusStopRepository.GetAllAsync()
+        async Task<IQueryable<BusStop>> IBusStopRepository.GetAllAsync()
         {
-            return await _context.BusStops.ToListAsync();
+            return _context.BusStops.AsQueryable();
         }
 
         async Task<BusStop> IBusStopRepository.GetByIdAsync(Guid id)

@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Identity;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllersWithViews();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -51,9 +50,17 @@ builder.Services.AddIdentityServer()
     })
     .AddDeveloperSigningCredential();
 
-var app = builder.Build();
-
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+        });
+});
 
 Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
@@ -65,17 +72,15 @@ Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Code)
                 .CreateLogger();
 
-var seed = args.Contains("/seed");
+var app = builder.Build();
 
-if (true)
+if (app.Environment.IsDevelopment())
 {
     Log.Information("Seeding database...");
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     SeedData.EnsureSeedData(connectionString);
     Log.Information("Done seeding database.");
 }
-
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -87,6 +92,8 @@ if (app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAll");
 
 app.UseIdentityServer();
 

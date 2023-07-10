@@ -7,7 +7,7 @@ using TransitApplication.HttpExceptions;
 
 namespace Presentation.Controllers
 {
-    [Authorize]
+    // [Authorize]
     [ApiController]
     [Route("api/bus-stops")]
     public class BusStopsController : ControllerBase

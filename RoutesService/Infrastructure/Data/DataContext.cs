@@ -9,6 +9,9 @@ namespace Infrastructure.Data
         public DbSet<RouteStop> RouteStops { get; set; }
         public DbSet<Route> Routes { get; set; }
 
-        public DataContext(DbContextOptions<DataContext> options) : base(options) { }
+        public DataContext(DbContextOptions<DataContext> options) : base(options) 
+        {
+            Database.EnsureCreated();
+        }
     }
 }

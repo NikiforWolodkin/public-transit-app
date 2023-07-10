@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using AuthenticationServer.Data;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.EntityFramework.Storage;
@@ -30,9 +31,13 @@ namespace AuthenticationServer
             {
                 scope.ServiceProvider.GetService<PersistedGrantDbContext>().Database.Migrate();
 
-                var context = scope.ServiceProvider.GetService<ConfigurationDbContext>();
-                context.Database.Migrate();
-                EnsureSeedData(context);
+                var configurationContext = scope.ServiceProvider.GetService<ConfigurationDbContext>();
+                configurationContext.Database.Migrate();
+
+                EnsureSeedData(configurationContext);
+
+                var applicationContext = scope.ServiceProvider.GetService<ApplicationDbContext>();
+                applicationContext.Database.Migrate();
             }
         }
 

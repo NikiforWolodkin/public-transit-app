@@ -14,28 +14,30 @@ namespace Services.Validators
 
             RuleFor(route => route.First().BusStop.Type).Equal(BusStopType.Depo);
             
-            RuleFor(route => route.First().NextBusStop).NotNull();
+            RuleFor(route => route.First().NextRouteStop).NotNull();
+
+            RuleFor(route => route.Last().NextRouteStop).Null();
 
             RuleFor(route => route.Last().BusStop.Type)
                 .Equal(BusStopType.Depo)
-                .When(stop => stop.Last().NextBusStop is null);
+                .When(route => route[1].BusStop.Id != route.Last().BusStop.Id);
 
-            RuleFor(route => route.Last().NextBusStop.Id)
-                .Equal(stop => stop[1].BusStop.Id)
-                .When(route => route.Last().NextBusStop is not null);
+            RuleFor(route => route.Last().BusStop.Id)
+                .Equal(route => route[1].BusStop.Id)
+                .When(route => route[1].BusStop.Id == route.Last().BusStop.Id);
 
             RuleFor(route => route.SkipLast(1)).Must(routeStops =>
             {
                 var utilizedBusStopIds = new List<Guid>();
 
-                foreach (var routeStop in routeStops.SkipLast(1))
+                foreach (var routeStop in routeStops)
                 {
-                    if (routeStop.NextBusStop is null)
+                    if (routeStop.NextRouteStop is null)
                     {
                         return false;
                     }
 
-                    if (utilizedBusStopIds.Contains(routeStop.NextBusStop.Id))
+                    if (utilizedBusStopIds.Contains(routeStop.NextRouteStop.BusStop.Id))
                     {
                         return false;
                     }
@@ -48,7 +50,7 @@ namespace Services.Validators
                         }
                     }
 
-                    utilizedBusStopIds.Add(routeStop.NextBusStop.Id);
+                    utilizedBusStopIds.Add(routeStop.NextRouteStop.BusStop.Id);
                 }
 
                 return true;

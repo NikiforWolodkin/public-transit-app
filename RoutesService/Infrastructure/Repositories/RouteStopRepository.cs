@@ -19,9 +19,9 @@ namespace Infrastructure.Repositories
             _context.RouteStops.Add(routeStop);
         }
 
-        async Task<ICollection<RouteStop>> IRouteStopRepository.GetAllAsync()
+        async Task<IQueryable<RouteStop>> IRouteStopRepository.GetAllAsync()
         {
-            return await _context.RouteStops.ToListAsync();
+            return _context.RouteStops.AsQueryable();
         }
 
         async Task<RouteStop> IRouteStopRepository.GetByIdAsync(Guid id)
