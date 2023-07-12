@@ -6,13 +6,13 @@
     <Nullable>enable</Nullable>
 
 	<PackageId>TransitApplication</PackageId>
-	<Version>1.1.0</Version>
+	<Version>1.2.1</Version>
 	<Authors>Nick Wolodkin</Authors>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<PackageReadmeFile>Readme.md</PackageReadmeFile>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<Description>
-		This NuGet package provides a set of custom enums, exceptions for use in TransitApplication, as well as middleware for handling these exceptions.
+		This NuGet package provides a set of custom enums, messaging contracts and exceptions for use in TransitApplication, as well as middleware for handling these exceptions.
 	</Description>
   </PropertyGroup>
 

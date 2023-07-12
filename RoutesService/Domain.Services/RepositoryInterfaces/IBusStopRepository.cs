@@ -7,6 +7,6 @@ namespace Domain.Services.RepositoryInterfaces
         Task<IQueryable<BusStop>> GetAllAsync();
         Task<BusStop> GetByIdAsync(Guid id);
         void Add(BusStop busStop);
-        void Delete(BusStop busStop);
+        void Remove(BusStop busStop);
     }
 }

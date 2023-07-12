@@ -10,7 +10,6 @@ WORKDIR /src
 COPY ["BusStopsService/Web/Web.csproj", "Web/"]
 COPY ["BusStopsService/Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 COPY ["BusStopsService/Domain/Domain.csproj", "Domain/"]
-COPY ["BusStopsService/Presentation/Presentation.csproj", "Presentation/"]
 COPY ["BusStopsService/Services/Services.csproj", "Services/"]
 RUN dotnet restore "Web/Web.csproj"
 COPY BusStopsService/. .

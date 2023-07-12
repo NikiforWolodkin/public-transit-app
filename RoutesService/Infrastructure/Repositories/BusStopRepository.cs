@@ -19,7 +19,7 @@ namespace Infrastructure.Repositories
             _context.BusStops.Add(busStop);
         }
 
-        void IBusStopRepository.Delete(BusStop busStop)
+        void IBusStopRepository.Remove(BusStop busStop)
         {
             _context.BusStops.Remove(busStop);
         }

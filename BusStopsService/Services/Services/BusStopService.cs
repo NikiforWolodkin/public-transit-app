@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Domain.Entities;
 using Domain.RepositoryInterfaces;
+using MassTransit;
+using TransitApplication.MessagingContracts;
 using NetTopologySuite.Geometries;
 using Services.Abstractions.Dtos;
 using Services.Abstractions.Interfaces;
@@ -12,11 +14,13 @@ namespace Services.Services
     {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IMapper _mapper;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public BusStopService(IRepositoryManager repositoryManager, IMapper mapper)
+        public BusStopService(IRepositoryManager repositoryManager, IMapper mapper, IPublishEndpoint publishEndpoint)
         {
             _repositoryManager = repositoryManager;
             _mapper = mapper;
+            _publishEndpoint = publishEndpoint;
         }
 
         async Task<BusStopDto> IBusStopService.AddAsync(BusStopAddDto busStopAddDto)
@@ -28,6 +32,9 @@ namespace Services.Services
                 _repositoryManager.BusStopRepository.Add(busStop);
 
                 await _repositoryManager.BusStopRepository.SaveChangesAsync();
+
+                var message = _mapper.Map<BusStopAdded>(busStop);
+                await _publishEndpoint.Publish(message);
 
                 var busStopDto = _mapper.Map<BusStopDto>(busStop);
 
@@ -99,9 +106,13 @@ namespace Services.Services
             {
                 var busStop = await _repositoryManager.BusStopRepository.GetByIdAsync(id);
 
+                var message = _mapper.Map<BusStopRemoved>(busStop);
+
                 _repositoryManager.BusStopRepository.Remove(busStop);
 
                 await _repositoryManager.BusStopRepository.SaveChangesAsync();
+
+                await _publishEndpoint.Publish(message);
             }
             catch (InvalidOperationException ex)
             {
@@ -125,6 +136,9 @@ namespace Services.Services
                 busStop.Coordinates.Y = busStopUpdateDto.Latitude;
 
                 await _repositoryManager.BusStopRepository.SaveChangesAsync();
+
+                var message = _mapper.Map<BusStopUpdated>(busStop);
+                await _publishEndpoint.Publish(message);
 
                 var busStopDto = _mapper.Map<BusStopDto>(busStop);
 

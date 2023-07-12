@@ -5,7 +5,7 @@ services:
       dockerfile: RoutesService/Web/Dockerfile
     ports: 
       - "5002:80"
-    depends_on: [ mysql ]
+    depends_on: [ mysql, rabbitmq ]
   mysql:
     image: mysql
     container_name: mysql
@@ -19,7 +19,7 @@ services:
       dockerfile: BusStopsService/Web/Dockerfile
     ports:
       - "5001:80"
-    depends_on: [ postgres ]
+    depends_on: [ postgres, rabbitmq ]
   postgres:
     image: postgis/postgis
     container_name: postgres
@@ -44,4 +44,10 @@ services:
       ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
+  rabbitmq:
+    image: masstransit/rabbitmq
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
   

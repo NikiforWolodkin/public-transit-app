@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Entities;
+using TransitApplication.MessagingContracts;
 using NetTopologySuite.Geometries;
 using Services.Abstractions.Dtos;
 
@@ -21,6 +22,10 @@ namespace Services.Profiles
                 .ForMember(destination => destination.Latitude, options => options.MapFrom(
                     source => source.Coordinates.Y
                  ));
+
+            CreateMap<BusStop, BusStopAdded>();
+            CreateMap<BusStop, BusStopRemoved>();
+            CreateMap<BusStop, BusStopUpdated>();
         }
     }
 }

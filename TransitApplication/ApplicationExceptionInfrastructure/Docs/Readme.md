@@ -1,14 +1,6 @@
 # TransitApplication
 
-This NuGet package provides a set of custom enums, exceptions for use in TransitApplication, as well as middleware for handling these exceptions.
-
-## Installation
-
-To install this package, use the following command in the Package Manager Console:
-
-```
-NuGet\Install-Package TransitApplication -Version 1.1.0
-```
+This NuGet package provides a set of custom enums, messaging contracts and exceptions for use in TransitApplication, as well as middleware for handling these exceptions.
 
 ## Usage 
 

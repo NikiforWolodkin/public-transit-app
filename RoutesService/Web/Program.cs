@@ -5,6 +5,7 @@ using FluentValidation;
 using Infrastructure;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -12,6 +13,7 @@ using Services.Interfaces;
 using Services.Services;
 using Services.Validators;
 using Swashbuckle.AspNetCore.Filters;
+using System.Reflection;
 using TransitApplication.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -75,6 +77,31 @@ builder.Services.AddDbContextPool<DataContext>(contextOptionsBuilder =>
         {
             builder.MigrationsAssembly("Web");
         });
+});
+
+builder.Services.AddMassTransit(cfg =>
+{
+    cfg.SetKebabCaseEndpointNameFormatter();
+
+    cfg.SetInMemorySagaRepositoryProvider();
+
+    var assembly = Assembly.GetEntryAssembly();
+
+    cfg.AddConsumers(assembly);
+    cfg.AddSagaStateMachines(assembly);
+    cfg.AddSagas(assembly);
+    cfg.AddActivities(assembly);
+
+    cfg.UsingRabbitMq((context, configurator) =>
+    {
+        configurator.Host("rabbitmq", "/", host =>
+        {
+            host.Username("guest");
+            host.Password("guest");
+        });
+
+        configurator.ConfigureEndpoints(context);
+    });
 });
 
 var app = builder.Build();

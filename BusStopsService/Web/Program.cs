@@ -2,6 +2,7 @@ using Domain.RepositoryInterfaces;
 using FluentValidation;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Presentation.Controllers;
@@ -37,14 +38,13 @@ builder.Services.AddSwaggerGen(options => {
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
-builder.Services.AddControllers()
-    .AddApplicationPart(typeof(BusStopsController).Assembly);
+builder.Services.AddControllers();
 
 builder.Services.AddAuthentication("Bearer")
     .AddIdentityServerAuthentication("Bearer", options =>
     {
         options.ApiName = "publictransitapi";
-        options.Authority = "https://auth:5443";
+        options.Authority = "https://auth:443";
     });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -67,8 +67,25 @@ builder.Services.AddDbContextPool<DataContext>(contextOptionsBuilder =>
     });
 });
 
+builder.Services.AddMassTransit(cfg =>
+{
+    cfg.SetKebabCaseEndpointNameFormatter();
+
+    cfg.UsingRabbitMq((context, configurator) =>
+    {
+        configurator.Host("rabbitmq", "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+
+        configurator.ConfigureEndpoints(context);
+    });
+});
+
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
 // if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
