@@ -1,4 +1,16 @@
 services:
+  timetables:
+    container_name: timetables
+    build:
+      dockerfile: TimetablesService/Web/Dockerfile
+    ports:
+      - "5003:80"
+    depends_on: [ mongo, rabbitmq ]
+  mongo:
+    container_name: mongo
+    image: mongo
+    ports:
+      - "27017:27017"
   routes:
     container_name: routes
     build:
