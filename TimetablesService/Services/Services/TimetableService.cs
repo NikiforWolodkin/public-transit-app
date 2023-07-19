@@ -1,7 +1,9 @@
-﻿using Domain.Entities;
-using Domain.RepositoryInterfaces;
+﻿using Domain.RepositoryInterfaces;
+using Serilog;
 using Services.Dtos;
 using Services.Interfaces;
+using System.Runtime.CompilerServices;
+using TransitApplication.HttpExceptions;
 
 namespace Services.Services
 {
@@ -16,35 +18,92 @@ namespace Services.Services
 
         async Task<BusStopTimetableDto> ITimetableService.GetBusStopTimetableAsync(Guid routeId, Guid busStopId)
         {
-            var route = await _timetableRepository.GetByRouteIdAsync(routeId);
+            var methodName = GetCurrentMethodName();
 
-            var priorStops = route.RouteStops.TakeWhile(stop => stop.BusStopId != busStopId);
-
-            var timeToAdd = priorStops
-                .Select(stop => stop.IntervalToNextStop)
-                .Aggregate((aggr, next) => aggr + next);
-
-            var arrivalsTimetable = route.DepartureTimes
-                .Select(time => time + timeToAdd)
-                .ToList();
-
-            var timetableDto = new BusStopTimetableDto
+            try
             {
-                BusStopId = busStopId,
-                RouteId = routeId,
-                ArrivalsTimetable = arrivalsTimetable
-            };
+                var route = await _timetableRepository.GetByRouteIdAsync(routeId);
 
-            return timetableDto;
+                if (!route.RouteStops.Any(stop => stop.BusStopId == busStopId))
+                {
+                    throw new NotFoundException("Bus stop not found.");
+                }
+
+                var priorStops = route.RouteStops.TakeWhile(stop => stop.BusStopId != busStopId);
+
+                var timeToAdd = TimeSpan.Zero;
+                if (priorStops.Any())
+                {
+                    // Calculate the total time to add based on the intervals between prior stops.
+                    timeToAdd = (TimeSpan)priorStops
+                        .Select(stop => stop.IntervalToNextStop)
+                        .Aggregate((aggr, next) => aggr + next);
+                }
+
+                // Add the calculated time to the departure times
+                // to get the arrival times at the specified bus stop.
+                var arrivalsTimetable = route.DepartureTimes
+                    .Select(time => time + timeToAdd)
+                    .ToList();
+
+                var timetableDto = new BusStopTimetableDto
+                {
+                    BusStopId = busStopId,
+                    RouteId = routeId,
+                    ArrivalsTimetable = arrivalsTimetable
+                };
+
+                return timetableDto;
+            }
+            catch (NotFoundException ex)
+            {
+                Log.Information("{methodName}: Route not found. Exception =>  {ex}", methodName, ex);
+
+                throw ex;
+            }
+            catch (InvalidOperationException ex)
+            {
+                Log.Information("{methodName}: Route not found. Exception =>  {ex}", methodName, ex);
+
+                throw new NotFoundException("Route not found.", $"{ex.GetType().Name}: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Log.Error("{methodName}: Error! Exception =>  {ex}", methodName, ex);
+
+                throw new InternalServerErrorException($"{ex.GetType().Name}: {ex.Message}");
+            }
         }
 
         async Task ITimetableService.UpdateAsync(Guid routeId, TimetableUpdateDto timetableUpdateDto)
         {
-            var route = await _timetableRepository.GetByRouteIdAsync(routeId);
+            var methodName = GetCurrentMethodName();
 
-            route.DepartureTimes = timetableUpdateDto.DepartureTimes;
+            try
+            {
+                var route = await _timetableRepository.GetByRouteIdAsync(routeId);
 
-            await _timetableRepository.UpdateAsync(route);
+                route.DepartureTimes = timetableUpdateDto.DepartureTimes;
+
+                await _timetableRepository.UpdateAsync(route);
+            }
+            catch (InvalidOperationException ex)
+            {
+                Log.Information("{methodName}: Route not found. Exception =>  {ex}", methodName, ex);
+
+                throw new NotFoundException("Route not found.", $"{ex.GetType().Name}: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Log.Error("{methodName}: Error! Exception =>  {ex}", methodName, ex);
+
+                throw new InternalServerErrorException($"{ex.GetType().Name}: {ex.Message}");
+            }
+        }
+
+        private string GetCurrentMethodName([CallerMemberName] string callerName = "")
+        {
+            return callerName;
         }
     }
 }

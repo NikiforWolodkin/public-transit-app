@@ -1,4 +1,4 @@
-﻿namespace Domain.Entities
+﻿namespace TransitApplication.AdditionalTypes
 {
     public class RouteStop
     {

@@ -23,6 +23,8 @@ namespace Web.Consumers
 
         public async Task Consume(ConsumeContext<BusStopAdded> context)
         {
+            var methodName = this.GetType().Name;
+
             try
             {
                 var busStop = _mapper.Map<BusStop>(context.Message);
@@ -31,11 +33,11 @@ namespace Web.Consumers
 
                 await _unitOfWork.SaveChangesAsync();
 
-                Log.Information("BusStopAddedConsumer: Bus stop added => {@busStop}", busStop);
+                Log.Information("{methodName}: Bus stop added => {@busStop}", methodName, busStop);
             }
             catch (Exception ex)
             {
-                Log.Error("BusStopAddedConsumer: Error! Exception =>  {@ex}", ex);
+                Log.Error("{methodName}: Error! Exception =>  {ex}", methodName, ex);
             }
         }
     }

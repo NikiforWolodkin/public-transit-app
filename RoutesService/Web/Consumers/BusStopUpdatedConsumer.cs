@@ -20,6 +20,8 @@ namespace Web.Consumers
 
         public async Task Consume(ConsumeContext<BusStopUpdated> context)
         {
+            var methodName = this.GetType().Name;
+
             try
             {
                 var busStop = await _busStopRepository.GetByIdAsync(context.Message.Id);
@@ -28,15 +30,15 @@ namespace Web.Consumers
 
                 await _unitOfWork.SaveChangesAsync();
 
-                Log.Information("BusStopUpdatedConsumer: Bus stop updated => {@busStop}", busStop);
+                Log.Information("{methodName}: Bus stop updated => {@busStop}", busStop);
             }
             catch (InvalidOperationException ex)
             {
-                Log.Error("BusStopUpdatedConsumer: Bus stop not found. Exception =>  {@ex}", ex);
+                Log.Error("{methodName}: Bus stop not found. Exception =>  {ex}", methodName, ex);
             }
             catch (Exception ex)
             {
-                Log.Error("BusStopUpdatedConsumer: Error! Exception =>  {@ex}", ex);
+                Log.Error("{methodName}: Error! Exception =>  {ex}", methodName, ex);
             }
         }
     }

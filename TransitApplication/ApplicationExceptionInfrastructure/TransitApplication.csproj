@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
 
 	<PackageId>TransitApplication</PackageId>
-	<Version>1.2.1</Version>
+	<Version>1.4.0</Version>
 	<Authors>Nick Wolodkin</Authors>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<PackageReadmeFile>Readme.md</PackageReadmeFile>

@@ -23,6 +23,8 @@ namespace Web.Consumers
 
         public async Task Consume(ConsumeContext<BusStopRemoved> context)
         {
+            var methodName = this.GetType().Name;
+
             try
             {
                 var busStop = _mapper.Map<BusStop>(context.Message);
@@ -31,15 +33,15 @@ namespace Web.Consumers
 
                 await _unitOfWork.SaveChangesAsync();
 
-                Log.Information("BusStopRemovedConsumer: Bus stop removed => {@busStop}", busStop);
+                Log.Information("{methodName}: Bus stop removed => {@busStop}", methodName, busStop);
             }
             catch (InvalidOperationException ex)
             {
-                Log.Error("BusStopRemovedConsumer: Bus stop not found. Exception =>  {@ex}", ex);
+                Log.Error("{methodName}: Bus stop not found. Exception =>  {ex}", ex);
             }
             catch (Exception ex)
             {
-                Log.Error("BusStopRemovedConsumer: Error! Exception =>  {@ex}", ex);
+                Log.Error("{methodName}: Error! Exception =>  {ex}", methodName, ex);
             }
         }
     }
