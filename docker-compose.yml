@@ -1,4 +1,10 @@
 services:
+  gateway:
+    container_name: gateway
+    build: 
+      dockerfile: GatewayService/Web/Dockerfile
+    ports:
+      - "6000:80"
   timetables:
     container_name: timetables
     build:

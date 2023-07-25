@@ -12,9 +12,9 @@ namespace Web.Controllers
     public class TimetablesController : ControllerBase
     {
         private readonly ITimetableService _timetableService;
-        private readonly IValidator<TimetableUpdateDto> _timetableUpdateValidator;
+        private readonly IValidator<DepartureTimetableAddDto> _timetableUpdateValidator;
 
-        public TimetablesController(ITimetableService timetableService, IValidator<TimetableUpdateDto> timetableUpdateValidator)
+        public TimetablesController(ITimetableService timetableService, IValidator<DepartureTimetableAddDto> timetableUpdateValidator)
         {
             _timetableService = timetableService;
             _timetableUpdateValidator = timetableUpdateValidator;
@@ -43,19 +43,22 @@ namespace Web.Controllers
         [ProducesResponseType(500)]
         [ProducesResponseType(401)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateAsync(Guid routeId, TimetableUpdateDto timetableUpdateDto)
+        public async Task<IActionResult> UpdateAsync(Guid routeId, List<DepartureTimetableAddDto> departureTimetablesAddDto)
         {
-            await _timetableService.UpdateAsync(routeId, timetableUpdateDto);
+            await _timetableService.UpdateAsync(routeId, departureTimetablesAddDto);
 
-            var validationResults = await _timetableUpdateValidator.ValidateAsync(timetableUpdateDto);
-
-            if (!validationResults.IsValid)
+            foreach (var departureTimetable in departureTimetablesAddDto)
             {
-                var error = validationResults.Errors.First();
+                var validationResults = await _timetableUpdateValidator.ValidateAsync(departureTimetable);
 
-                var errorMessage = $"{error.ErrorCode}: {error.ErrorMessage}";
+                if (!validationResults.IsValid)
+                {
+                    var error = validationResults.Errors.First();
 
-                throw new BadRequestException("Departure times are invalid.", errorMessage);
+                    var errorMessage = $"{error.ErrorCode}: {error.ErrorMessage}";
+
+                    throw new BadRequestException("Departure times are invalid.", errorMessage);
+                }
             }
 
             return NoContent();

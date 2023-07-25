@@ -1,0 +1,103 @@
+{
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/api/bus-stops",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "bus-stops",
+          "Port": 80
+        }
+      ],
+      "DownstreamPathTemplate": "/api/bus-stops"
+    },
+    {
+      "UpstreamPathTemplate": "/api/bus-stops/{id}",
+      "UpstreamHttpMethod": [ "Get", "Put", "Delete" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "bus-stops",
+          "Port": 80
+        }
+      ],
+      "DownstreamPathTemplate": "/api/bus-stops/{id}"
+    },
+    {
+      "UpstreamPathTemplate": "/api/bus-stops/{longitude}&{latitude}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "bus-stops",
+          "Port": 80
+        }
+      ],
+      "DownstreamPathTemplate": "/api/bus-stops/{longitude}&{latitude}"
+    },
+    {
+      "UpstreamPathTemplate": "/api/timetables/{routeId}",
+      "UpstreamHttpMethod": [ "Put" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "timetables",
+          "Port": 80
+        }
+      ],
+      "DownstreamPathTemplate": "/api/timetables/{routeId}"
+    },
+    {
+      "UpstreamPathTemplate": "/api/timetables/{everything}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "timetables",
+          "Port": 80
+        }
+      ],
+      "DownstreamPathTemplate": "/api/timetables/{everything}"
+    },
+    {
+      "UpstreamPathTemplate": "/api/routes",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "routes",
+          "Port": 80
+        }
+      ],
+      "DownstreamPathTemplate": "/api/routes"
+    },
+    {
+      "UpstreamPathTemplate": "/api/routes/{id}",
+      "UpstreamHttpMethod": [ "Get", "Put", "Delete" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "routes",
+          "Port": 80
+        }
+      ],
+      "DownstreamPathTemplate": "/api/routes/{id}"
+    },
+    {
+      "UpstreamPathTemplate": "/api/routes/search",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "routes",
+          "Port": 80
+        }
+      ],
+      "DownstreamPathTemplate": "/api/routes/search"
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:800"
+  }
+}

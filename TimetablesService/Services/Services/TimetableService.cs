@@ -1,4 +1,6 @@
-﻿using Domain.RepositoryInterfaces;
+﻿using AutoMapper;
+using Domain.Entities;
+using Domain.RepositoryInterfaces;
 using Serilog;
 using Services.Dtos;
 using Services.Interfaces;
@@ -10,10 +12,12 @@ namespace Services.Services
     public class TimetableService : ITimetableService
     {
         private readonly ITimetableRepository _timetableRepository;
+        private readonly IMapper _mapper;
 
-        public TimetableService(ITimetableRepository timetableRepository)
+        public TimetableService(ITimetableRepository timetableRepository, IMapper mapper)
         {
             _timetableRepository = timetableRepository;
+            _mapper = mapper;
         }
 
         async Task<BusStopTimetableDto> ITimetableService.GetBusStopTimetableAsync(Guid routeId, Guid busStopId)
@@ -42,15 +46,22 @@ namespace Services.Services
 
                 // Add the calculated time to the departure times
                 // to get the arrival times at the specified bus stop.
-                var arrivalsTimetable = route.DepartureTimes
-                    .Select(time => time + timeToAdd)
+                var arrivalsTimetables = route.DepartureTimetables
+                    .Select(table =>
+                    {
+                        table.DepartureTimes = table.DepartureTimes
+                            .Select(time => time + timeToAdd)
+                            .ToList();
+
+                        return table;
+                    })
                     .ToList();
 
                 var timetableDto = new BusStopTimetableDto
                 {
                     BusStopId = busStopId,
                     RouteId = routeId,
-                    ArrivalsTimetable = arrivalsTimetable
+                    ArrivalsTimetables = _mapper.Map<List<ArrivalsTimetableDto>>(arrivalsTimetables)
                 };
 
                 return timetableDto;
@@ -75,7 +86,7 @@ namespace Services.Services
             }
         }
 
-        async Task ITimetableService.UpdateAsync(Guid routeId, TimetableUpdateDto timetableUpdateDto)
+        async Task ITimetableService.UpdateAsync(Guid routeId, List<DepartureTimetableAddDto> departureTimetablesAddDto)
         {
             var methodName = GetCurrentMethodName();
 
@@ -83,7 +94,7 @@ namespace Services.Services
             {
                 var route = await _timetableRepository.GetByRouteIdAsync(routeId);
 
-                route.DepartureTimes = timetableUpdateDto.DepartureTimes;
+                route.DepartureTimetables = _mapper.Map<List<DepartureTimetable>>(departureTimetablesAddDto);
 
                 await _timetableRepository.UpdateAsync(route);
             }

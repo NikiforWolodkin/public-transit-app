@@ -4,6 +4,6 @@
     {
         public Guid RouteId { get; set; }
         public Guid BusStopId { get; set; }
-        public List<DateTime> ArrivalsTimetable { get; set; }
+        public List<ArrivalsTimetableDto> ArrivalsTimetables { get; set; }
     }
 }

@@ -6,7 +6,7 @@ namespace Domain.Entities
     {
         public ObjectId Id { get; set; }
         public Guid RouteId { get; set; }
-        public List<DateTime>? DepartureTimes { get; set; }
+        public List<DepartureTimetable>? DepartureTimetables { get; set; }
         public List<RouteStop> RouteStops { get; set; }
     }
 }

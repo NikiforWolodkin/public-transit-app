@@ -9,10 +9,10 @@ namespace Services.Interfaces
         /// Updates the timetable of a route asynchronously.
         /// </summary>
         /// <param name="routeId">The id of the route.</param>
-        /// <param name="timetableUpdateDto">The object containing the updated timetable information.</param>
+        /// <param name="departureTimetablesAddDto">List containing the updated timetable information.</param>
         /// <exception cref="NotFoundException">Thrown when a route with specified id is not found.</exception>
         /// <exception cref="InternalServerErrorException">Thrown when an internal server error occurs.</exception>
-        Task UpdateAsync(Guid routeId, TimetableUpdateDto timetableUpdateDto);
+        Task UpdateAsync(Guid routeId, List<DepartureTimetableAddDto> departureTimetablesAddDto);
 
         /// <summary>
         /// Retrieves the timetable for a specific bus stop on a route asynchronously.

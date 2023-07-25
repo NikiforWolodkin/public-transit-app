@@ -3,9 +3,9 @@ using Services.Dtos;
 
 namespace Web.Validators
 {
-    public class TimetableUpdateDtoValidator : AbstractValidator<TimetableUpdateDto>
+    public class DepartureTimetableAddDtoValidator : AbstractValidator<DepartureTimetableAddDto>
     {
-        public TimetableUpdateDtoValidator()
+        public DepartureTimetableAddDtoValidator()
         {
             RuleFor(timetable => timetable.DepartureTimes)
                 .NotNull()
