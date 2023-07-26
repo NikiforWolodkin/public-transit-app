@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+	<PackageId>TransitApplication</PackageId>
+	<Version>1.4.0</Version>
+	<Authors>Nick Wolodkin</Authors>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<PackageReadmeFile>Readme.md</PackageReadmeFile>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<Description>
+		This NuGet package provides a set of custom enums, messaging contracts and exceptions for use in TransitApplication, as well as middleware for handling these exceptions.
+	</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+
+	<None Include="Docs\Readme.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

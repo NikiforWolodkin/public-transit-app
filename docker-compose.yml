@@ -1,0 +1,71 @@
+services:
+  gateway:
+    container_name: gateway
+    build: 
+      dockerfile: GatewayService/Web/Dockerfile
+    ports:
+      - "6000:80"
+  timetables:
+    container_name: timetables
+    build:
+      dockerfile: TimetablesService/Web/Dockerfile
+    ports:
+      - "5003:80"
+    depends_on: [ mongo, rabbitmq ]
+  mongo:
+    container_name: mongo
+    image: mongo
+    ports:
+      - "27017:27017"
+  routes:
+    container_name: routes
+    build:
+      dockerfile: RoutesService/Web/Dockerfile
+    ports: 
+      - "5002:80"
+    depends_on: [ mysql, rabbitmq ]
+  mysql:
+    image: mysql
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 'SYSTEM'
+    ports:
+      - "3306:3306"
+  bus-stops:
+    container_name: bus-stops
+    build: 
+      dockerfile: BusStopsService/Web/Dockerfile
+    ports:
+      - "5001:80"
+    depends_on: [ postgres, rabbitmq ]
+  postgres:
+    image: postgis/postgis
+    container_name: postgres
+    environment:
+      - POSTGRES_PASSWORD=SYSTEM
+    ports:
+      - '5432:5432'
+  auth:
+    container_name: auth
+    build:
+      dockerfile: AuthenticationServer/Dockerfile
+    ports:
+      - "5000:80"
+      - "5443:443"
+    depends_on: [ mssql ]
+  mssql:
+    container_name: mssql
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      SA_PASSWORD: "SYSTEM_USER00"
+      MSSQL_PID: "Express"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+  rabbitmq:
+    image: masstransit/rabbitmq
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  
