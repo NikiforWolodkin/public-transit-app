@@ -1,16 +1,41 @@
 services:
+  images:
+    container_name: images
+    build: 
+      dockerfile: ImagesService/Web/Dockerfile
+    ports:
+      - "5005:80"
+    depends_on: [ blob-storage ]
+  blob-storage:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: blob-storage
+    command: azurite-blob --blobHost 0.0.0.0 --blobPort 10000
+    ports:
+      - "10000:10000"
+  client:
+   image: node:alpine
+   container_name: client
+   entrypoint: /bin/sh -c 'npm i && npm run dev'
+   ports:
+     - 8000:8000
+   working_dir: /srv/app
+   volumes:
+     - type: bind
+       source: ./Client
+       target: /srv/app
+   tty: true
   gateway:
     container_name: gateway
     build: 
       dockerfile: GatewayService/Web/Dockerfile
     ports:
-      - "6000:80"
+      - "5000:80"
   timetables:
     container_name: timetables
     build:
       dockerfile: TimetablesService/Web/Dockerfile
     ports:
-      - "5003:80"
+      - "5004:80"
     depends_on: [ mongo, rabbitmq ]
   mongo:
     container_name: mongo
@@ -22,7 +47,7 @@ services:
     build:
       dockerfile: RoutesService/Web/Dockerfile
     ports: 
-      - "5002:80"
+      - "5003:80"
     depends_on: [ mysql, rabbitmq ]
   mysql:
     image: mysql
@@ -36,7 +61,7 @@ services:
     build: 
       dockerfile: BusStopsService/Web/Dockerfile
     ports:
-      - "5001:80"
+      - "5002:80"
     depends_on: [ postgres, rabbitmq ]
   postgres:
     image: postgis/postgis
@@ -50,7 +75,7 @@ services:
     build:
       dockerfile: AuthenticationServer/Dockerfile
     ports:
-      - "5000:80"
+      - "5001:80"
       - "5443:443"
     depends_on: [ mssql ]
   mssql:

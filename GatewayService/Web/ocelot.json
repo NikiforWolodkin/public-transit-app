@@ -95,6 +95,54 @@
         }
       ],
       "DownstreamPathTemplate": "/api/routes/search"
+    },
+    {
+      "UpstreamPathTemplate": "/api/images",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "images",
+          "Port": 80
+        }
+      ],
+      "DownstreamPathTemplate": "/api/images"
+    },
+    {
+      "UpstreamPathTemplate": "/api/images/{id}",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "images",
+          "Port": 80
+        }
+      ],
+      "DownstreamPathTemplate": "/api/images/{id}"
+    },
+    {
+      "UpstreamPathTemplate": "/api/images/{imageName}",
+      "UpstreamHttpMethod": [ "Delete" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "images",
+          "Port": 80
+        }
+      ],
+      "DownstreamPathTemplate": "/api/images/{imageName}"
+    },
+    {
+      "UpstreamPathTemplate": "/api/storage/{anything}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "blob-storage",
+          "Port": 10000
+        }
+      ],
+      "DownstreamPathTemplate": "/devstoreaccount1/busstopimages/{anything}"
     }
   ],
   "GlobalConfiguration": {
