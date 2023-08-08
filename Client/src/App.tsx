@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, Marker, Popup, ZoomControl } from 'react-leaflet';
+import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import Sidebar from './components/sidebar';
 import Search from './components/search';
@@ -6,9 +6,11 @@ import { useEffect, useState } from 'react';
 import getBusStops from './API/getBusStops';
 import BusStop from './models/busStop';
 import BusStopMarker from './components/busStopMarker';
+import BusStopTab from './components/busStopTab';
 
 function App() {
   const [busStops, setBusStops] = useState<BusStop[]>([]);
+  const [selectedBusStopId, setSelectedBusStopId] = useState<string>("none");
 
   useEffect(() => {
     const fetchBusStops = async () => {
@@ -23,12 +25,16 @@ function App() {
     fetchBusStops();
   }, []);
 
-  console.log(busStops);
-
   return (
     <>
-      <Sidebar />
+      <Sidebar 
+        selectedBusStop={selectedBusStopId}
+      />
       <Search />
+      <BusStopTab
+        selectedBusStopId={selectedBusStopId}
+        selectedBusStop={busStops.filter(stop => stop.id === selectedBusStopId)?.[0]}
+      />
 
       <MapContainer 
         center={[52.2297, 21.0122]}
@@ -43,7 +49,12 @@ function App() {
         />
 
         {busStops.map(stop => (
-          <BusStopMarker busStop={stop} />
+          <BusStopMarker 
+            key={stop.id}
+            busStop={stop}
+            isSelected={stop.id === selectedBusStopId}
+            setSelected={setSelectedBusStopId}
+          />
         ))}
       </MapContainer>
     </>

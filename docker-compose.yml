@@ -1,4 +1,17 @@
 services:
+  images:
+    container_name: images
+    build: 
+      dockerfile: ImagesService/Web/Dockerfile
+    ports:
+      - "5005:80"
+    depends_on: [ blob-storage ]
+  blob-storage:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: blob-storage
+    command: azurite-blob --blobHost 0.0.0.0 --blobPort 10000
+    ports:
+      - "10000:10000"
   client:
    image: node:alpine
    container_name: client

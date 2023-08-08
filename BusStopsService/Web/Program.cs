@@ -5,7 +5,6 @@ using Infrastructure.Repositories;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Presentation.Controllers;
 using Presentation.Validators;
 using Services.Abstractions.Dtos;
 using Services.Interfaces;

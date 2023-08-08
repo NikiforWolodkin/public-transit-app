@@ -1,14 +1,17 @@
 import BusStop from "../models/busStop";
-import { Marker, Popup } from 'react-leaflet';
+import { Marker } from 'react-leaflet';
 import { Icon } from 'leaflet';
 
 interface IBusStopMarkerProps {
-    busStop: BusStop
+    busStop: BusStop,
+    isSelected: boolean,
+    setSelected: any
 }
 
 const selectedIcon = new Icon({
     iconUrl: '/marker.png',
-    iconSize: [30, 30]
+    iconSize: [30, 30],
+    iconAnchor: [15, 27]
 });
 const busStopIcon = new Icon({
     iconUrl: '/bus-stop.png',
@@ -19,16 +22,16 @@ const depoIcon = new Icon({
     iconSize: [30, 30]
 });
 
-
-const BusStopMarker: React.FC<IBusStopMarkerProps> = ({ busStop }) => {
+const BusStopMarker: React.FC<IBusStopMarkerProps> = ({ busStop, isSelected, setSelected }) => {
     return (
         <>
             <Marker 
                 position={[busStop.longitude, busStop.latitude]}
-                icon={busStop.type === 0 ? busStopIcon : depoIcon}
-            >
-                <Popup>{busStop.name}</Popup>
-            </Marker>
+                icon={isSelected === true ? selectedIcon : (busStop.type === 0 ? busStopIcon : depoIcon)}
+                eventHandlers={{
+                    click: (e) => setSelected(busStop.id)
+                }}
+            />
         </>
     );
 };

@@ -1,7 +1,5 @@
-import BusStop from "../models/busStop";
-
-const getBusStops = async (): Promise<BusStop[]> => {
-    const response = await fetch("http://localhost:5000/api/bus-stops", {
+const getImageNames = async (busStopId: string): Promise<string[]> => {
+    const response = await fetch(`http://localhost:5000/api/images/${busStopId}`, {
         method: 'GET',
         headers: {'Content-Type': 'application/json'},
         cache: 'no-store'
@@ -18,4 +16,4 @@ const getBusStops = async (): Promise<BusStop[]> => {
     return result;
 }
 
-export default getBusStops;
+export default getImageNames;

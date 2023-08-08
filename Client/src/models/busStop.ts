@@ -1,5 +1,5 @@
 type BusStop = {
-    id: number,
+    id: string,
     name: string,
     type: number,
     longitude: number,
