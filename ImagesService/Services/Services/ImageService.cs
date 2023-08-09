@@ -37,12 +37,12 @@ namespace Services.Services
         {
             using var content = image.OpenReadStream();
 
-            var extension = Path.GetExtension(image.FileName);
+            var fileExtension = Path.GetExtension(image.FileName);
             var date = DateTime.Now.ToString()
                 .Replace(" ", "-")
                 .Replace("/", "-")
                 .Replace(":", "-");
-            var blobName = $"{busStopId}-{date}{extension}";
+            var blobName = $"{busStopId}-{date}{fileExtension}";
 
             await _blobService.UploadBlobAsync(content, blobName);
 

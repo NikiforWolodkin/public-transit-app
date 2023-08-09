@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { TbSearch } from "react-icons/tb";
+import { CgClose } from "react-icons/cg";
 
-const Search: React.FC = () => {
+interface ISearchProps {
+    selectedBusStop: string
+    setSelected: any
+}
+
+const Search: React.FC<ISearchProps> = ({ selectedBusStop, setSelected }) => {
     const [text, setText] = useState<string>("");
 
     return (
@@ -13,9 +19,22 @@ const Search: React.FC = () => {
                     value={text}
                     onChange={ e => setText(e.target.value) }
                 />
-                <div className="text-2xl text-gray-500 cursor-pointer mx-4">
+                <div className="text-2xl text-gray-500 cursor-pointer ml-4">
                     <TbSearch />
                 </div>
+
+                {selectedBusStop !== "none" ? 
+                    <>
+                        <div className="border-r-2 h-5 rounded-full mx-2"></div>
+                        <div 
+                            className="text-2xl text-gray-500 cursor-pointer mr-4"
+                            onClick={ () => setSelected("none") }
+                        >
+                            <CgClose />
+                        </div>
+                    </>
+                    : <div className="w-4"></div>
+                }
             </div>
         </>
     );

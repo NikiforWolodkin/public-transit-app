@@ -30,7 +30,10 @@ function App() {
       <Sidebar 
         selectedBusStop={selectedBusStopId}
       />
-      <Search />
+      <Search 
+        selectedBusStop={selectedBusStopId}
+        setSelected={setSelectedBusStopId}
+      />
       <BusStopTab
         selectedBusStopId={selectedBusStopId}
         selectedBusStop={busStops.filter(stop => stop.id === selectedBusStopId)?.[0]}
