@@ -1,4 +1,5 @@
-﻿using Services.Abstractions.Dtos;
+﻿using Domain.Entities;
+using Services.Abstractions.Dtos;
 
 namespace Services.Abstractions.Interfaces
 {
@@ -19,6 +20,8 @@ namespace Services.Abstractions.Interfaces
         /// <returns>A collection of BusStopDto objects.</returns>
         /// <exception cref="Domain.Exceptions.InternalServerErrorException">Thrown when an internal server error occurs.</exception>
         Task<ICollection<BusStopDto>> GetNearbyAsync(double longitude, double latitude);
+
+        Task<ICollection<BusStopDto>> SearchByBusStopNameAsync(string busStopName);
 
         /// <summary>
         /// Gets a bus stop by its ID asynchronously.

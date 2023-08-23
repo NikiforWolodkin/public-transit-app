@@ -6,7 +6,7 @@ namespace Services.Interfaces
     {
         Task<ICollection<RouteDto>> GetAllAsync();
         Task<ICollection<RouteDto>> GetBusStopRoutesAsync(Guid busStopId);
-        Task<ICollection<RouteDto>> GetByRouteNameAsync(string routeName);
+        Task<ICollection<RouteDto>> SearchByRouteNameAsync(string routeName);
         Task<RouteDto> GetByIdAsync(Guid id);
         Task<RouteDto> AddAsync(RouteAddDto routeAddDto);
         Task<RouteDto> ReplaceRouteStopsAsync(Guid id, List<RouteStopAddDto> routeStopsDtos);

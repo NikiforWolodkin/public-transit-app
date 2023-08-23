@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { TbBuilding } from "react-icons/tb";
+import { TbBuilding, TbBus } from "react-icons/tb";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { FaCircleInfo } from "react-icons/fa6";
 import getImageNames from "../API/getImageNames";
 import BusStop from "../models/busStop";
+import getBusStopRoutes from "../API/getBusStopRoutes";
+import Route from "../models/route";
 
 interface IBusStopTabProps {
     selectedBusStopId: string
@@ -11,6 +13,7 @@ interface IBusStopTabProps {
 }
 
 const BusStopTab: React.FC<IBusStopTabProps> = ({ selectedBusStopId, selectedBusStop }) => {
+    const [routes, setRoutes] = useState<Route[] | null>(null);
     const [imageURL, setImageURL] = useState<string>("none");
 
     useEffect(() => {
@@ -26,9 +29,20 @@ const BusStopTab: React.FC<IBusStopTabProps> = ({ selectedBusStopId, selectedBus
                 console.error(err);
             }
         };
+
+        const fetchRoutes = async () => {
+            try {
+                const data = await getBusStopRoutes(selectedBusStopId);
+                setRoutes(data);
+            } catch (err) {
+                console.error(err);
+            }
+        };
     
         if (selectedBusStopId !== "none") {
+            setRoutes(null);
             setImageURL("none");
+            fetchRoutes();
             fetchImages();
         }
     }, [selectedBusStopId]);
@@ -87,6 +101,24 @@ const BusStopTab: React.FC<IBusStopTabProps> = ({ selectedBusStopId, selectedBus
                 <div className="px-4 py-3">
                     <div className="text-2xl font-semibold">
                         Routes
+                    </div>
+                    <div>
+                        {routes !== null ?
+                            <>
+                                {routes.map(route => (
+                                    <div 
+                                        className="cursor-pointer flex mt-2 text-large font-semibold items-center"
+                                        key={route.id}
+                                    >
+                                        <div className="text-2xl mr-2">
+                                            <TbBus />
+                                        </div>
+                                        {route.name}
+                                    </div>
+                                ))}
+                            </>
+                            : <div className="text-xl font-semibold">Loading...</div>
+                        }
                     </div>
                 </div>
             </div>

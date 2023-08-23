@@ -63,9 +63,9 @@ namespace Infrastructure
             return await _routeRepository.GetByIdAsync(id);
         }
 
-        async Task<IQueryable<Route>> IUnitOfWork.GetRoutesByRouteNameAsync(string routeName)
+        async Task<IQueryable<Route>> IUnitOfWork.SearchRoutesByNameAsync(string routeName)
         {
-            return await _routeRepository.GetByRouteNameAsync(routeName);
+            return await _routeRepository.SearchByRouteNameAsync(routeName);
         }
 
         async Task<RouteStop> IUnitOfWork.GetRouteStopByIdAsync(Guid id)

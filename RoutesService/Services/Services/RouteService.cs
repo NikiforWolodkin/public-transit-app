@@ -160,11 +160,11 @@ namespace Services.Services
             }
         }
 
-        async Task<ICollection<RouteDto>> IRouteService.GetByRouteNameAsync(string routeName)
+        async Task<ICollection<RouteDto>> IRouteService.SearchByRouteNameAsync(string routeName)
         {
             try
             {
-                var routesQueryable = await _unitOfWork.GetRoutesByRouteNameAsync(routeName);
+                var routesQueryable = await _unitOfWork.SearchRoutesByNameAsync(routeName);
                 var routes = routesQueryable.ToList();
 
                 foreach (var route in routes)

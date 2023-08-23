@@ -39,10 +39,10 @@ namespace Infrastructure.Repositories
             return await _context.Routes.FirstAsync(route => route.Id == id);
         }
 
-        async Task<IQueryable<Route>> IRouteRepository.GetByRouteNameAsync(string routeName)
+        async Task<IQueryable<Route>> IRouteRepository.SearchByRouteNameAsync(string routeName)
         {
             return _context.Routes
-                .Where(route => route.Name == routeName)
+                .Where(route => route.Name.ToUpper().Contains(routeName.ToUpper()))
                 .AsQueryable();
         }
 

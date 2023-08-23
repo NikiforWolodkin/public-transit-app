@@ -54,16 +54,6 @@ namespace Infrastructure.StorageServices
             });
         }
 
-        private static string GetContentType(string fileName)
-        {
-            if (!s_fileExtensionProvider.TryGetContentType(fileName, out var contentType))
-            {
-                contentType = "application/octet-stream";
-            }
-
-            return contentType;
-        }
-
         async Task<ICollection<string>> IBlobService.ListBlobsAsync(string prefix)
         {
             var blobContainerName = _configuration.GetValue<string>("AzureBlobStorage:ContainerName");
@@ -76,6 +66,15 @@ namespace Infrastructure.StorageServices
             }
 
             return blobs;
+        }
+        private static string GetContentType(string fileName)
+        {
+            if (!s_fileExtensionProvider.TryGetContentType(fileName, out var contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+
+            return contentType;
         }
     }
 }

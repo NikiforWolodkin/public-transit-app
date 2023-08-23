@@ -46,7 +46,7 @@ namespace Presentation.Controllers
 
             if (routeName is not null)
             {
-                var routes = await _routeService.GetByRouteNameAsync(routeName);
+                var routes = await _routeService.SearchByRouteNameAsync(routeName);
 
                 return Ok(routes);
             }

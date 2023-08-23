@@ -124,6 +124,22 @@ namespace Services.Services
             }
         }
 
+        async Task<ICollection<BusStopDto>> IBusStopService.SearchByBusStopNameAsync(string busStopName)
+        {
+            try
+            {
+                var busStops = await _repositoryManager.BusStopRepository.SearchByBusStopNameAsync(busStopName);
+
+                var busStopsDto = _mapper.Map<ICollection<BusStopDto>>(busStops);
+
+                return busStopsDto;
+            }
+            catch (Exception ex)
+            {
+                throw new InternalServerErrorException($"{ex.GetType().Name}: {ex.Message}");
+            }
+        }
+
         async Task<BusStopDto> IBusStopService.UpdateAsync(Guid id, BusStopUpdateDto busStopUpdateDto)
         {
             try

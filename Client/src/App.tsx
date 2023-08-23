@@ -7,10 +7,12 @@ import getBusStops from './API/getBusStops';
 import BusStop from './models/busStop';
 import BusStopMarker from './components/busStopMarker';
 import BusStopTab from './components/busStopTab';
+import MapFocuserComponent from './components/mapFocuserComponent';
 
 function App() {
   const [busStops, setBusStops] = useState<BusStop[]>([]);
   const [selectedBusStopId, setSelectedBusStopId] = useState<string>("none");
+  const [selectedBusStopCoordinates, setSelectedBusStopCoordinates] = useState<number[] | null>(null);
 
   useEffect(() => {
     const fetchBusStops = async () => {
@@ -33,6 +35,7 @@ function App() {
       <Search 
         selectedBusStop={selectedBusStopId}
         setSelected={setSelectedBusStopId}
+        setSelectedCoordinates={setSelectedBusStopCoordinates}
       />
       <BusStopTab
         selectedBusStopId={selectedBusStopId}
@@ -59,6 +62,10 @@ function App() {
             setSelected={setSelectedBusStopId}
           />
         ))}
+
+        <MapFocuserComponent 
+          coordinates={selectedBusStopCoordinates}
+        />
       </MapContainer>
     </>
   )

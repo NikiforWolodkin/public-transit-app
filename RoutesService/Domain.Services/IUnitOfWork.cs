@@ -9,7 +9,7 @@ namespace Domain.Services
         void RemoveRoute(Route route);
         Task<IQueryable<Route>> GetAllRoutesAsync();
         Task<IQueryable<Route>> GetBusStopRoutesAsync(Guid busStopId);
-        Task<IQueryable<Route>> GetRoutesByRouteNameAsync(string routeName);
+        Task<IQueryable<Route>> SearchRoutesByNameAsync(string routeName);
         Task<Route> GetRouteByIdAsync(Guid id);
         Task<IQueryable<RouteStop>> GetAllRouteStopsAsync();
         Task<RouteStop> GetRouteStopByIdAsync(Guid id);

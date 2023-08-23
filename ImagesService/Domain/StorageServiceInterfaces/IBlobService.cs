@@ -4,9 +4,9 @@ namespace Domain.ServiceRepositories
 {
     public interface IBlobService
     {
-        public Task<ICollection<string>> ListBlobsAsync();
-        public Task<ICollection<string>> ListBlobsAsync(string prefix);
-        public Task UploadBlobAsync(Stream content, string blobName);
-        public Task DeleteBlobAsync(string blobName);
+        Task<ICollection<string>> ListBlobsAsync();
+        Task<ICollection<string>> ListBlobsAsync(string prefix);
+        Task UploadBlobAsync(Stream content, string blobName);
+        Task DeleteBlobAsync(string blobName);
     }
 }

@@ -47,5 +47,12 @@ namespace Infrastructure.Repositories
         {
             await _dataContext.SaveChangesAsync();
         }
+
+        async Task<ICollection<BusStop>> IBusStopRepository.SearchByBusStopNameAsync(string busStopName)
+        {
+            return await _dataContext.BusStops
+                .Where(busStop => busStop.Name.ToUpper().Contains(busStopName.ToUpper()))
+                .ToListAsync();
+        }
     }
 }

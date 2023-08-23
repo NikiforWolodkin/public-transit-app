@@ -60,6 +60,17 @@ namespace Presentation.Controllers
             return Ok(busStops);
         }
 
+        [HttpGet("search")]
+        [ProducesResponseType(200, Type = typeof(ICollection<BusStopDto>))]
+        [ProducesResponseType(500)]
+        [ProducesResponseType(401)]
+        public async Task<IActionResult> SearchByBusStopNameAsync(string busStopName)
+        {
+            var busStops = await _serviceManager.BusStopService.SearchByBusStopNameAsync(busStopName);
+
+            return Ok(busStops);
+        }
+
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(BusStopDto))]
         [ProducesResponseType(500)]
